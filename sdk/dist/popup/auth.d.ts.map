@@ -1,0 +1,1 @@
+{"version":3,"file":"auth.d.ts","sourceRoot":"","sources":["../../src/popup/auth.ts"],"names":[],"mappings":"AAAA,wBAAgB,cAAc,CAAC,IAAI,EAAE;IACjC,OAAO,EAAE,MAAM,CAAC;IAChB,SAAS,EAAE,MAAM,CAAC;IAClB,QAAQ,EAAE,MAAM,CAAC;IACjB,MAAM,EAAE,MAAM,CAAC;IACf,aAAa,EAAE,MAAM,CAAC;CACzB,iBAmBA"}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/d3fcc241-3559-4b61-ae14-61274cd089a8/console.sql" value="d3fcc241-3559-4b61-ae14-61274cd089a8" />
+    <file url="file://$PROJECT_DIR$/internal/adapter/storage/postgres/provider_repo.go" value="d3fcc241-3559-4b61-ae14-61274cd089a8" />
+    <file url="file://$PROJECT_DIR$/internal/adapter/storage/postgres/user_repo.go" value="d3fcc241-3559-4b61-ae14-61274cd089a8" />
+  </component>
+</project>

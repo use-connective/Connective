@@ -1,0 +1,101 @@
+Open Source Internal Use License (O.S.I.U License)
+Version 1.0 — 2025
+
+Copyright (c) 2025 Connective
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the “Software”), to use, copy, 
+modify, and self-host the Software for personal use or for internal business 
+operations, subject to the following conditions:
+
+----------------------------------------------------------------------
+ Allowed Uses
+----------------------------------------------------------------------
+
+1. Personal Use  
+   You may use, run, and modify the Software for your personal use.
+
+2. Internal Business Use  
+   You may deploy and operate the Software within your company, organization, or 
+   team for internal workflows, automation, or data processing.
+
+3. Self-Hosting  
+   You may self-host the Software on your own servers or cloud accounts.
+
+4. Derivative Works  
+   You may create derivative works for personal or internal use.  
+   Any distributed modifications must retain this license text.
+
+----------------------------------------------------------------------
+ Prohibited Uses
+----------------------------------------------------------------------
+
+The following uses are strictly prohibited without a separate written agreement 
+from the copyright holder:
+
+1. Offering the Software as a Service ("SaaS")  
+   You may NOT host the Software, or any modified version of it, and provide 
+   access to third parties as a managed service, cloud service, hosted service, 
+   multi-tenant product, or API-based service.
+
+2. Commercial Resale or Repackaging  
+   You may NOT sell, license, distribute, or repackage the Software or any 
+   modified version as a commercial product.
+
+3. Competing Services  
+   You may NOT use the Software to build or operate any product or service that 
+   competes directly or indirectly with the original author’s hosted or managed 
+   SaaS offering.
+
+4. Sub-licensing  
+   You may NOT sublicense or redistribute the Software to any third party as 
+   part of a product, platform, toolkit, or integration framework.
+
+----------------------------------------------------------------------
+ Distribution Requirements
+----------------------------------------------------------------------
+
+If you distribute any portion of the Software (including modified versions), 
+you MUST:
+
+1. Include a complete copy of this license.  
+2. Retain all copyright notices.  
+3. Clearly identify any modifications made.  
+4. Not remove or obscure the original author’s attribution.
+
+----------------------------------------------------------------------
+ Termination
+----------------------------------------------------------------------
+
+Any violation of the “Prohibited Uses” section will automatically terminate your 
+rights under this License. Upon termination, all use of the Software must cease 
+immediately.
+
+----------------------------------------------------------------------
+ No Warranty
+----------------------------------------------------------------------
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+PURPOSE, AND NON-INFRINGEMENT.
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR 
+OTHER LIABILITY ARISING FROM THE USE OR INABILITY TO USE THE SOFTWARE.
+
+----------------------------------------------------------------------
+ Trademarks
+----------------------------------------------------------------------
+
+This license does NOT grant permission to use the author’s trademarks, brand 
+names, or logos.
+
+----------------------------------------------------------------------
+ Governing Law
+----------------------------------------------------------------------
+
+This License shall be governed by the laws of the jurisdiction in which the 
+copyright holder resides.
+
+----------------------------------------------------------------------
+ End of License
+----------------------------------------------------------------------

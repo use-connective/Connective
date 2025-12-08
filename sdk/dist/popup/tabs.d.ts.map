@@ -1,0 +1,1 @@
+{"version":3,"file":"tabs.d.ts","sourceRoot":"","sources":["../../src/popup/tabs.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,aAAa,CAAC;AAEpD,wBAAgB,SAAS,CACrB,SAAS,EAAE,WAAW,EACtB,YAAY,EAAE,gBAAgB;qBASA,UAAU,GAAG,eAAe;EAsB7D"}

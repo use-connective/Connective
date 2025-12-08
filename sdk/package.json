@@ -1,0 +1,20 @@
+{
+  "name": "connective_sdk",
+  "version": "1.0.0",
+  "description": "This folder will have API first SDK to connect with *Connective* written in several languages.",
+  "license": "ISC",
+  "author": "Sushant",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "axios": "^1.13.2"
+  }
+}

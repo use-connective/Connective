@@ -1,0 +1,16 @@
+[
+  {
+    "name" : "",
+    "display_name" : "",
+    "auth_type" : "",
+    "image_url" : "",
+    "category" : "",
+    "description": "",
+    "primary_color" : "",
+    "auth_url" : "",
+    "token_url" :"",
+    "redirect_url" : "",
+    "default_scopes" : [],
+    "refresh_token_url" : ""
+  }
+]

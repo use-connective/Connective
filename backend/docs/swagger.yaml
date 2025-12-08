@@ -1,0 +1,505 @@
+definitions:
+  dao.ProviderListDisplayable:
+    properties:
+      display_name:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
+  domain.Project:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      owner:
+        type: integer
+      sdk_auth_secret:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.Provider:
+    properties:
+      auth_type:
+        type: string
+      auth_url:
+        type: string
+      category:
+        type: string
+      created_at:
+        type: string
+      default_scopes:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      display_name:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      primary_color:
+        type: string
+      redirect_url:
+        type: string
+      refresh_token_url:
+        type: string
+      token_url:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      is_onboarding_completed:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      state:
+        $ref: '#/definitions/domain.UserState'
+      updated_at:
+        type: string
+    type: object
+  domain.UserState:
+    enum:
+    - PROJECT_PENDING
+    - ACTIVE
+    - ONBOARDING_COMPLETION_PENDING
+    type: string
+    x-enum-varnames:
+    - UserStateProjectPending
+    - UserStateActive
+    - UserStateOnboardingCompletionPending
+  dto.CreateProjectRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.CreateUpdateProviderCreds:
+    properties:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+      project_id:
+        type: string
+      provider_id:
+        type: integer
+      scopes:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.LoginResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/domain.User'
+    type: object
+  dto.SignupResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/domain.User'
+    type: object
+  server.APIResponse:
+    properties:
+      data: {}
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/integration/connected-accounts:
+    get:
+      consumes:
+      - application/json
+      description: Get connected accounts.
+      produces:
+      - application/json
+      responses: {}
+      summary: Get connected accounts.
+      tags:
+      - Integration
+  /api/v1/integration/creds/save:
+    post:
+      consumes:
+      - application/json
+      description: Create or update integration credential.
+      parameters:
+      - description: Create Project Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUpdateProviderCreds'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data: {}
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Create or update integration credential.
+      tags:
+      - Integration
+  /api/v1/integration/provider:
+    get:
+      consumes:
+      - application/json
+      description: Get provider by id.
+      parameters:
+      - description: Provider Id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Provider'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get provider by id.
+      tags:
+      - Integration
+  /api/v1/integration/provider/categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all categories.
+      produces:
+      - application/json
+      responses: {}
+      summary: Get all categories.
+      tags:
+      - Integration
+  /api/v1/integration/provider/creds:
+    get:
+      consumes:
+      - application/json
+      description: Get provider credentials.
+      parameters:
+      - description: Provider ID
+        in: query
+        name: providerID
+        required: true
+        type: string
+      - description: Project ID
+        in: query
+        name: projectID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Provider'
+              type: object
+      summary: Get provider credentials.
+      tags:
+      - Integration
+  /api/v1/integration/provider/get-provider:
+    get:
+      consumes:
+      - application/json
+      description: Get provider by name.
+      parameters:
+      - description: Provider
+        in: query
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Provider'
+              type: object
+      summary: Get provider by name.
+      tags:
+      - Integration
+  /api/v1/integration/providers:
+    get:
+      consumes:
+      - application/json
+      description: Get all providers list.
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Category
+        in: query
+        name: category
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dao.ProviderListDisplayable'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get all providers list.
+      tags:
+      - Integration
+  /api/v1/project/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new project.
+      parameters:
+      - description: Create Project Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.Project'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new project.
+      tags:
+      - Project
+  /api/v1/project/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Get all projects of a user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/domain.Project'
+                  type: array
+              type: object
+      summary: Get all projects of a user.
+      tags:
+      - Project
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Get logged-in user details.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.User'
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get logged-in user details.
+      tags:
+      - User
+  /api/v1/user/complete-onboarding:
+    post:
+      consumes:
+      - application/json
+      description: Complete User Onboarding
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data: {}
+              type: object
+      summary: Complete User Onboarding
+      tags:
+      - Auth
+  /api/v1/user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user.
+      parameters:
+      - description: Signup Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SignupResponse'
+              type: object
+      summary: Create a new user.
+      tags:
+      - Auth
+  /api/v1/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User and return JWT token.
+      parameters:
+      - description: Login Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/server.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LoginResponse'
+              type: object
+      summary: Login User
+      tags:
+      - Auth
+  /oauth/connect:
+    get:
+      consumes:
+      - application/json
+      description: Starts the OAuth flow for a specific provider by redirecting the
+        user to the provider's authorization URL.
+      parameters:
+      - description: Provider name (e.g., slack, GitHub)
+        in: query
+        name: provider
+        required: true
+        type: string
+      - description: Project ID associated with the authorization
+        in: query
+        name: projectID
+        required: true
+        type: string
+      - description: User ID initiating the connection
+        in: query
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Redirects to provider OAuth URL
+          schema:
+            type: string
+        "404":
+          description: Unknown or unsupported provider
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Missing provider credentials
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Initiate OAuth connection
+      tags:
+      - OAuth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

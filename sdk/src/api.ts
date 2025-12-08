@@ -1,0 +1,39 @@
+import axios from "axios";
+import type { ProviderResponse } from "./types.js";
+
+/**
+ * fetchProvider accepts baseURL so there's no global.
+ */
+export async function fetchProvider(
+    baseURL: string,
+    provider: string
+): Promise<ProviderResponse> {
+    try {
+        const res = await axios.get(
+            `${baseURL}/api/v1/integration/provider/get-provider`,
+            {
+                params: { provider },
+                headers: { accept: "application/json" },
+                withCredentials: true,
+            }
+        );
+
+        return {
+            message: res.data?.message ?? "Success",
+            data: res.data?.data ?? null,
+            error: null,
+        };
+    } catch (err: any) {
+        const status = err?.response?.status;
+        const message = err?.response?.data?.message;
+        const errorText = status
+            ? `HTTP Error: ${status}`
+            : err?.message ?? "Unknown error";
+
+        return {
+            message: message ?? "Failed to fetch provider",
+            data: null,
+            error: errorText,
+        };
+    }
+}
