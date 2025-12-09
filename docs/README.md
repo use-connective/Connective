@@ -1,5 +1,5 @@
 <div align="center">
-<h2>Connective - Integration Infrastructure for every SaaS</h2>
+<h2>Connective - Integration Infrastructure for every product</h2>
 </div>
 
 **Connective** is an open-source, developer-friendly platform that enables SaaS teams to offer plug-and-play third-party integrations directly inside their product with minimal engineering effort.
