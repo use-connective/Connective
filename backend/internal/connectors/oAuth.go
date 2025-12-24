@@ -24,6 +24,7 @@ type OAuthHandler struct {
 	connectedAccountRepo    port.ConnectedAccountRepo
 	projectRepo             port.ProjectRepo
 	providerCredentialsRepo port.ProviderCredentialsRepo
+	connectorRegistry       *Registry
 }
 
 // oauthLogContext holds common context for OAuth logging
@@ -40,6 +41,7 @@ func NewOAuthHandler(
 	connectedAccountRepo port.ConnectedAccountRepo,
 	projectRepo port.ProjectRepo,
 	providerCredentialsRepo port.ProviderCredentialsRepo,
+	connectorRegistry *Registry,
 ) *OAuthHandler {
 	return &OAuthHandler{
 		integrationSvc,
@@ -47,6 +49,7 @@ func NewOAuthHandler(
 		connectedAccountRepo,
 		projectRepo,
 		providerCredentialsRepo,
+		connectorRegistry,
 	}
 }
 
@@ -91,7 +94,7 @@ func (h *OAuthHandler) HandleConnect(ctx *gin.Context) {
 		return
 	}
 
-	connector := GetConnector(providerName)
+	connector := h.connectorRegistry.GetConnector(providerName)
 	if connector == nil {
 		logError("Unknown provider connector", logCtx)
 		ctx.JSON(400, gin.H{"error": "Unable to connect with " + providerName, "error_code": "UNKNOWN_PROVIDER"})
@@ -158,7 +161,7 @@ func (h *OAuthHandler) HandleCallback(ctx *gin.Context) {
 	projectID, userId := parts[0], parts[1]
 	logCtx := oauthLogContext{provider: providerName, projectID: projectID, userID: userId}
 
-	connector := GetConnector(providerName)
+	connector := h.connectorRegistry.GetConnector(providerName)
 	if connector == nil {
 		logError("Unknown provider connector", logCtx)
 		ctx.JSON(400, gin.H{"error": "Unable to connect with " + providerName, "error_code": "UNKNOWN_PROVIDER"})

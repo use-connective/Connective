@@ -15,6 +15,7 @@ import (
 	"github.com/x-sushant-x/connective/internal/adapter/config"
 	"github.com/x-sushant-x/connective/internal/adapter/server"
 	"github.com/x-sushant-x/connective/internal/adapter/storage/postgres"
+	redisClient "github.com/x-sushant-x/connective/internal/adapter/storage/redis"
 	"github.com/x-sushant-x/connective/internal/connectors"
 	dropboxConnector "github.com/x-sushant-x/connective/internal/connectors/dropbox"
 	githubConnector "github.com/x-sushant-x/connective/internal/connectors/github"
@@ -53,6 +54,10 @@ func main() {
 
 	postgres.AutoMigrateTables(ctx, pg.Pool)
 
+	cache := redisClient.NewRedisClient(ctx)
+
+	connectorRegistry := connectors.NewRegistryHandler(cache)
+
 	// Repository Layer Initialization
 
 	authRepo := postgres.NewAuthRepo(pg)
@@ -61,7 +66,7 @@ func main() {
 	providerRepo := postgres.NewProviderRepo(pg)
 	connectedAccountRepo := postgres.NewConnectedAccountRepo(pg)
 	userRepo := postgres.NewUserRepo(pg)
-	router := server.NewRouter(authRepo, projectRepo, providerCredentialsRepo, providerRepo, connectedAccountRepo, userRepo)
+	router := server.NewRouter(authRepo, projectRepo, providerCredentialsRepo, providerRepo, connectedAccountRepo, userRepo, connectorRegistry)
 
 	// Seeding Providers
 	providerSvc := service.NewProviderSvc(providerRepo)
@@ -74,7 +79,7 @@ func main() {
 		Handler: router,
 	}
 
-	registerConnectors(providerRepo)
+	registerConnectors(ctx, providerRepo, connectorRegistry)
 
 	go func() {
 		log.Info().Msgf("HTTP Server started on port: %s", httpAddr)
@@ -103,7 +108,7 @@ func main() {
 	log.Info().Msg("Server exited cleanly")
 }
 
-func registerConnectors(providerRepo port.ProviderRepo) {
+func registerConnectors(ctx context.Context, providerRepo port.ProviderRepo, registry *connectors.Registry) {
 	slack := iSlack.New(providerRepo)
 	gCalendar := googleCalendar.New(providerRepo)
 	github := githubConnector.New(providerRepo)
@@ -111,5 +116,5 @@ func registerConnectors(providerRepo port.ProviderRepo) {
 	drive := googleDrive.New(providerRepo)
 	gmail := googleMail.New(providerRepo)
 
-	connectors.RegisterConnector(slack, gCalendar, github, dropbox, drive, gmail)
+	registry.Register(ctx, slack, gCalendar, github, dropbox, drive, gmail)
 }

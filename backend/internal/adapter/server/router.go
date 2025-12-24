@@ -25,6 +25,7 @@ func NewRouter(
 	providerRepo port.ProviderRepo,
 	connectedAccountRepo port.ConnectedAccountRepo,
 	userRepo port.UserRepo,
+	connectorsRegistry *connectors.Registry,
 ) *Router {
 
 	// if config.Config.Environment == "prod" {
@@ -60,7 +61,7 @@ func NewRouter(
 	userSvc := service.NewUserService(userRepo)
 	providerSvc := service.NewProviderSvc(providerRepo)
 
-	oAuthHandler := connectors.NewOAuthHandler(integrationSvc, providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo)
+	oAuthHandler := connectors.NewOAuthHandler(integrationSvc, providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo, connectorsRegistry)
 
 	setupSwaggerRoute(router)
 	setupAuthRoute(router, authRepo, userRepo, middlewareHandler)

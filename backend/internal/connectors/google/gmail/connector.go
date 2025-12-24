@@ -19,13 +19,13 @@ func New(providerRepo port.ProviderRepo) *Connector {
 }
 
 func (s *Connector) Name() string {
-	return "google-mail"
+	return "gmail"
 }
 
 func (s *Connector) AuthStrategy() common.AuthStrategy {
 	ctx := context.Background()
 
-	provider, err := s.providerRepo.GetProviderByName(ctx, "google-mail")
+	provider, err := s.providerRepo.GetProviderByName(ctx, "gmail")
 	if err != nil || provider == nil {
 		// TODO - See where it impacts and handle accordingly.
 		log.Err(err).Msg("Unable to get auth strategy for google mail")

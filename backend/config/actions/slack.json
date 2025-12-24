@@ -1,0 +1,17 @@
+[
+  {
+    "cacheKey" : "slack_chat.postMessage",
+    "key": "chat.postMessage",
+    "name": "Send message",
+    "method": "POST",
+    "url": "https://slack.com/api/chat.postMessage",
+    "headers": {
+      "Authorization": "Bearer {{access_token}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "channel": "{{channel}}",
+      "text": "{{text}}"
+    }
+  }
+]

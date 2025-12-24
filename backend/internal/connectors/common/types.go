@@ -69,3 +69,19 @@ type UserCredentials struct {
 	RefreshToken string
 	ExpiresAt    *time.Time
 }
+
+type ConnectorAction struct {
+	CacheKey string `json:"cacheKey"`
+	Key      string `json:"key"`
+	Name     string `json:"name"`
+	Method   string `json:"method"`
+	URL      string `json:"url"`
+	Headers  struct {
+		Authorization string `json:"Authorization"`
+		ContentType   string `json:"Content-Type"`
+	} `json:"headers"`
+	Body struct {
+		Channel string `json:"channel"`
+		Text    string `json:"text"`
+	} `json:"body"`
+}
