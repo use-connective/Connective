@@ -1,4 +1,4 @@
-****<div align="center">
+<div align="center">
 <h2>Connective - Integration Infrastructure for every product</h2>
 </div>
 
