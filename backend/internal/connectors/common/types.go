@@ -1,11 +1,14 @@
 package common
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Connector interface {
 	Name() string
 	AuthStrategy() AuthStrategy
-	Actions() map[string]ActionHandler
+	GetAction(ctx context.Context, actionName string) *ConnectorAction
 }
 
 type TokenResponse struct {
@@ -71,17 +74,11 @@ type UserCredentials struct {
 }
 
 type ConnectorAction struct {
-	CacheKey string `json:"cacheKey"`
-	Key      string `json:"key"`
-	Name     string `json:"name"`
-	Method   string `json:"method"`
-	URL      string `json:"url"`
-	Headers  struct {
-		Authorization string `json:"Authorization"`
-		ContentType   string `json:"Content-Type"`
-	} `json:"headers"`
-	Body struct {
-		Channel string `json:"channel"`
-		Text    string `json:"text"`
-	} `json:"body"`
+	CacheKey string         `json:"cacheKey"`
+	Key      string         `json:"key"`
+	Name     string         `json:"name"`
+	Method   string         `json:"method"`
+	URL      string         `json:"url"`
+	Headers  map[string]any `json:"headers"`
+	Body     map[string]any `json:"body"`
 }

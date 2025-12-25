@@ -69,7 +69,7 @@ func NewRouter(
 	setupIntegrationsRoute(router, middlewareHandler, integrationSvc, providerSvc)
 	setupConnectorRoutes(router, oAuthHandler)
 	setupUserRoutes(router, userRepo, middlewareHandler)
-	setupActionHandler(router, providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo)
+	setupActionHandler(router, providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo, connectorsRegistry)
 
 	return &Router{
 		router,
@@ -139,9 +139,10 @@ func setupActionHandler(
 	providerRepo port.ProviderRepo,
 	connectedAccountRepo port.ConnectedAccountRepo,
 	projectRepo port.ProjectRepo,
-	providerCredentialsRepo port.ProviderCredentialsRepo) {
+	providerCredentialsRepo port.ProviderCredentialsRepo,
+	connectorRegistry *connectors.Registry) {
 
-	h := connectors.NewConnectorHandler(providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo)
+	h := connectors.NewConnectorHandler(providerRepo, connectedAccountRepo, projectRepo, providerCredentialsRepo, connectorRegistry)
 
 	router.POST("/execute/:provider/:action", h.ExecuteAction)
 }

@@ -19,7 +19,7 @@ import (
 	"github.com/x-sushant-x/connective/internal/connectors"
 	dropboxConnector "github.com/x-sushant-x/connective/internal/connectors/dropbox"
 	githubConnector "github.com/x-sushant-x/connective/internal/connectors/github"
-	"github.com/x-sushant-x/connective/internal/connectors/google/calendar"
+	googleCalendar "github.com/x-sushant-x/connective/internal/connectors/google/calendar"
 	googleDrive "github.com/x-sushant-x/connective/internal/connectors/google/drive"
 	googleMail "github.com/x-sushant-x/connective/internal/connectors/google/gmail"
 	iSlack "github.com/x-sushant-x/connective/internal/connectors/slack"
@@ -79,7 +79,7 @@ func main() {
 		Handler: router,
 	}
 
-	registerConnectors(ctx, providerRepo, connectorRegistry)
+	registerConnectors(ctx, providerRepo, connectorRegistry, cache)
 
 	go func() {
 		log.Info().Msgf("HTTP Server started on port: %s", httpAddr)
@@ -108,13 +108,13 @@ func main() {
 	log.Info().Msg("Server exited cleanly")
 }
 
-func registerConnectors(ctx context.Context, providerRepo port.ProviderRepo, registry *connectors.Registry) {
-	slack := iSlack.New(providerRepo)
-	gCalendar := googleCalendar.New(providerRepo)
-	github := githubConnector.New(providerRepo)
-	dropbox := dropboxConnector.New(providerRepo)
-	drive := googleDrive.New(providerRepo)
-	gmail := googleMail.New(providerRepo)
+func registerConnectors(ctx context.Context, providerRepo port.ProviderRepo, registry *connectors.Registry, cache port.Cache) {
+	slack := iSlack.New(providerRepo, cache)
+	gCalendar := googleCalendar.New(providerRepo, cache)
+	github := githubConnector.New(providerRepo, cache)
+	dropbox := dropboxConnector.New(providerRepo, cache)
+	drive := googleDrive.New(providerRepo, cache)
+	gmail := googleMail.New(providerRepo, cache)
 
 	registry.Register(ctx, slack, gCalendar, github, dropbox, drive, gmail)
 }

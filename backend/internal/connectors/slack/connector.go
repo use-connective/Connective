@@ -2,6 +2,7 @@ package iSlack
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/rs/zerolog/log"
 	"github.com/x-sushant-x/connective/internal/connectors/common"
@@ -10,11 +11,13 @@ import (
 
 type SlackConnector struct {
 	providerRepo port.ProviderRepo
+	cache        port.Cache
 }
 
-func New(providerRepo port.ProviderRepo) *SlackConnector {
+func New(providerRepo port.ProviderRepo, cache port.Cache) *SlackConnector {
 	return &SlackConnector{
 		providerRepo,
+		cache,
 	}
 }
 
@@ -36,9 +39,27 @@ func (s *SlackConnector) AuthStrategy() common.AuthStrategy {
 	return NewSlackStrategy(provider)
 }
 
-func (s *SlackConnector) Actions() map[string]common.ActionHandler {
-	return map[string]common.ActionHandler{
-		"chat.postMessage":   s.SendMessage,
-		"conversations.list": s.ListChannels,
+func (s *SlackConnector) GetAction(ctx context.Context, actionName string) *common.ConnectorAction {
+	actionCacheKey := s.Name() + "_" + actionName
+
+	actionStr, err := s.cache.GetJson(ctx, actionCacheKey)
+	if err != nil {
+		log.Err(err).Str("actionName", actionName).Msg("Unable to get action.")
+		return nil
 	}
+
+	if actionStr == "" {
+		log.Err(err).Str("actionName", actionName).Msg("Action string empty.")
+		return nil
+	}
+
+	var action common.ConnectorAction
+
+	err = json.Unmarshal([]byte(actionStr), &action)
+	if err != nil {
+		log.Err(err).Str("actionName", actionName).Msg("Unable unmarshal action.")
+		return nil
+	}
+
+	return &action
 }

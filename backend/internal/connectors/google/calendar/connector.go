@@ -2,6 +2,8 @@ package googleCalendar
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/rs/zerolog/log"
 	"github.com/x-sushant-x/connective/internal/connectors/common"
@@ -10,11 +12,13 @@ import (
 
 type Connector struct {
 	providerRepo port.ProviderRepo
+	cache        port.Cache
 }
 
-func New(providerRepo port.ProviderRepo) *Connector {
+func New(providerRepo port.ProviderRepo, cache port.Cache) *Connector {
 	return &Connector{
 		providerRepo,
+		cache,
 	}
 }
 
@@ -35,6 +39,27 @@ func (s *Connector) AuthStrategy() common.AuthStrategy {
 	return NewGoogleCalendarStrategy(provider)
 }
 
-func (s *Connector) Actions() map[string]common.ActionHandler {
-	return map[string]common.ActionHandler{}
+func (s *Connector) GetAction(ctx context.Context, actionName string) *common.ConnectorAction {
+	actionCacheKey := fmt.Sprintf("%s_%s", s.Name(), actionName)
+
+	actionStr, err := s.cache.GetJson(ctx, actionCacheKey)
+	if err != nil {
+		log.Err(err).Str("actionName", actionName).Msg("Unable to get action.")
+		return nil
+	}
+
+	if actionStr == "" {
+		log.Err(err).Str("actionName", actionName).Msg("Action string empty.")
+		return nil
+	}
+
+	var action common.ConnectorAction
+
+	err = json.Unmarshal([]byte(actionStr), &action)
+	if err != nil {
+		log.Err(err).Str("actionName", actionName).Msg("Unable unmarshal action.")
+		return nil
+	}
+
+	return &action
 }
