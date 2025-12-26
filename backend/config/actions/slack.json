@@ -13,5 +13,17 @@
       "channel": "{{channel}}",
       "text": "{{text}}"
     }
+  },
+  {
+    "cacheKey" : "slack_conversations.list",
+    "key": "conversations.list",
+    "name": "Lists all channels in a Slack team.",
+    "method": "GET",
+    "url": "https://slack.com/api/conversations.list",
+    "headers": {
+      "Authorization": "Bearer {{access_token}}",
+      "Content-Type": "application/json"
+    },
+    "body": {}
   }
 ]
