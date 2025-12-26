@@ -67,27 +67,45 @@ export default function ConnectedAccounts() {
                             <p className="text-center">There are currently no connected integrations for this project. <br/>
                                 Once they complete an integration, their accounts will be displayed here.</p>
                         </div> :
-                        <Table className="w-full table-fixed">
+
+                        <Table className="w-full">
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[30%]">User ID</TableHead>
-                                    <TableHead className="w-[55%]">Integrations Enabled</TableHead>
-                                    <TableHead className="w-[15%]">Date Created</TableHead>
+                                <TableRow className="border-b border-gray-100">
+                                    <TableHead className="w-[35%] text-[11px] font-medium tracking-wide uppercase text-gray-500 py-3">
+                                        User
+                                    </TableHead>
+                                    <TableHead className="w-[45%] text-[11px] font-medium tracking-wide uppercase text-gray-500 py-3">
+                                        Integrations Enabled
+                                    </TableHead>
+                                    <TableHead className="w-[20%] text-[11px] font-medium tracking-wide uppercase text-gray-500 py-3 text-right">
+                                        Date Created
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
 
                             <TableBody>
-                                {
-                                    connectedAccounts.map((user) => (
-                                        <TableRow key={user.user_id}>
-                                            <TableCell className="w-[30%] font-medium">{user.user_id}</TableCell>
-                                            <TableCell className="w-[55%]">{user.integrations_enabled}</TableCell>
-                                            <TableCell className="w-[15%]">{user.displayable_date}</TableCell>
-                                        </TableRow>
-                                    ))
-                                }
+                                {connectedAccounts.map((user) => (
+                                    <TableRow
+                                        key={user.user_id}
+                                        className="border-b border-gray-50 last:border-b-0"
+                                    >
+                                        <TableCell className="py-5 text-sm font-medium text-gray-900">
+                                            {user.user_id}
+                                        </TableCell>
+
+                                        <TableCell className="py-5 text-sm text-gray-700">
+                                            {user.integrations_enabled}
+                                        </TableCell>
+
+                                        <TableCell className="py-5 text-sm text-gray-500 text-right">
+                                            {user.displayable_date}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
+
+
                 }
 
             </div>

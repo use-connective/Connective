@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router";
-import { Button } from "../ui/button";
 import {
     MdOutlineIntegrationInstructions,
     MdOutlineSupport,
@@ -96,7 +95,7 @@ export default function Sidebar() {
                             onClick={() => navigate("/dashboard/workflow")}
                             className={`flex items-center gap-3 text-sm cursor-pointer ${linkClass(
                                 "/dashboard/workflow",
-                                "/dashboard/catalog"
+                                "/dashboard/workflow"
                             )}`}
                         >
                             <LuWorkflow /> Workflow
