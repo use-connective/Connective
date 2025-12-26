@@ -40,6 +40,26 @@ Suppose you want to integrate **Slack** into your SaaS to send messages to your 
    Other integrations work the same way.
 
 
+### ⏰ Time saved by using Connective
+
+Integration work doesn’t end after launch. It accumulates as time debt across every release.
+
+| Task                        | Time Cost            | With Connective                         |
+|-----------------------------|----------------------|------------------------------------------|
+| OAuth setup                 | +2–3 days            | Eliminated                               |
+| Token storage & refresh     | +2 days              | Eliminated                               |
+| API client implementation   | +3–5 days            | Eliminated                               |
+| Scopes & permission changes | +1–2 days            | Handled centrally                        |
+| Error handling & retries    | +1–2 days            | Built-in                                 |
+| Ongoing maintenance         | Every release        | Handled by Connective                    |
+| Workflow creation           | +1–2 days / workflow| Within minutes with Drag & Drop builder |
+
+#### Typical outcome
+
+**From ~2–3 weeks per integration → under 1 hour**
+
+Multiply this by every integration your customers request. This is where most engineering time disappears.
+
 ### 🌐 More Details
 You may visit [useconnective.tech](https://useconnective.tech) for more details.
 
