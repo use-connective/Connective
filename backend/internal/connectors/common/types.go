@@ -22,7 +22,7 @@ type TokenResponse struct {
 type ActionExecuteRequest struct {
 	ProjectSecret string         `json:"project_secret"`
 	UserID        string         `json:"user_id"`
-	RequestBody   map[string]any `json:"request_body"`
+	Body          map[string]any `json:"request_body"`
 	ProjectID     string         `json:"project_id"`
 }
 
@@ -74,11 +74,12 @@ type UserCredentials struct {
 }
 
 type ConnectorAction struct {
-	CacheKey string         `json:"cacheKey"`
-	Key      string         `json:"key"`
-	Name     string         `json:"name"`
-	Method   string         `json:"method"`
-	URL      string         `json:"url"`
-	Headers  map[string]any `json:"headers"`
-	Body     map[string]any `json:"body"`
+	CacheKey string            `json:"cacheKey"`
+	Key      string            `json:"key"`
+	Name     string            `json:"name"`
+	Method   string            `json:"method"`
+	URL      string            `json:"url"`
+	Query    map[string]string `json:"query"`
+	Headers  map[string]string `json:"headers"`
+	Body     map[string]any    `json:"body"`
 }

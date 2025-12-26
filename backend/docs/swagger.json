@@ -17,6 +17,22 @@
                     "Integration"
                 ],
                 "summary": "Get connected accounts.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Project I'd",
+                        "name": "projectId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User I'd",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -537,6 +553,33 @@
                 }
             }
         },
+        "/execute/:provider/:action": {
+            "post": {
+                "description": "Execute Action Request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Action"
+                ],
+                "summary": "Execute Action Request",
+                "parameters": [
+                    {
+                        "description": "Execute Action Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.ActionExecuteRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/oauth/connect": {
             "get": {
                 "description": "Starts the OAuth flow for a specific provider by redirecting the user to the provider's authorization URL.",
@@ -603,6 +646,24 @@
         }
     },
     "definitions": {
+        "common.ActionExecuteRequest": {
+            "type": "object",
+            "properties": {
+                "project_id": {
+                    "type": "string"
+                },
+                "project_secret": {
+                    "type": "string"
+                },
+                "request_body": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "dao.ProviderListDisplayable": {
             "type": "object",
             "properties": {

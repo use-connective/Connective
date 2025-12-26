@@ -1,9 +1,14 @@
 package connectors
 
 import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/x-sushant-x/connective/internal/connectors/common"
 	"github.com/x-sushant-x/connective/internal/core/port"
 )
@@ -33,6 +38,14 @@ func NewConnectorHandler(
 
 }
 
+// ExecuteAction godoc
+// @Summary Execute Action Request
+// @Description Execute Action Request
+// @Tags Action
+// @Accept  json
+// @Produce  json
+// @Param  request body common.ActionExecuteRequest true "Execute Action Request"
+// @Router /execute/:provider/:action [post]
 func (c *ConnectorHandler) ExecuteAction(ctx *gin.Context) {
 	var req common.ActionExecuteRequest
 
@@ -88,7 +101,7 @@ func (c *ConnectorHandler) ExecuteAction(ctx *gin.Context) {
 	now := time.Now().UTC()
 
 	// Generating and storing new access token if old is expired.
-	if userCreds.ExpiresAt.UTC().Before(now) {
+	if userCreds.ExpiresAt != nil && userCreds.ExpiresAt.UTC().Before(now) {
 		providerCredentials, err := c.providerCredentialsRepo.GetByProjectAndProvider(ctx, projectID, provider.ID)
 		if err != nil || providerCredentials == nil {
 			ctx.JSON(400, gin.H{"error": "Action execution failed.", "error_code": "PROVIDER_CREDENTIALS_NOT_PRESENT"})
@@ -120,5 +133,68 @@ func (c *ConnectorHandler) ExecuteAction(ctx *gin.Context) {
 		}
 	}
 
-	// TODO - Action handling need to be studied before implementing.
+	headers := make(map[string]string)
+	for k, v := range action.Headers {
+		headers[k] = interpolate(v, req.Body, userCreds).(string)
+	}
+
+	var bodyBytes []byte
+	if req.Body != nil {
+		interpolatedBody := interpolate(action.Body, req.Body, userCreds)
+		bodyBytes, _ = json.Marshal(interpolatedBody)
+	}
+
+	apiCall, err := http.NewRequestWithContext(ctx, action.Method, action.URL, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		log.Err(err).Msg("unable to create request for calling action.")
+		ctx.JSON(400, gin.H{"error": "Action execution failed.", "error_code": "REQ_CREATION_FAILED"})
+		return
+	}
+
+	for k, v := range headers {
+		apiCall.Header.Set(k, v)
+	}
+
+	q := apiCall.URL.Query()
+	for k, v := range action.Query {
+		q.Set(k, interpolate(v, req.Body, userCreds).(string))
+	}
+	apiCall.URL.RawQuery = q.Encode()
+
+	resp, err := http.DefaultClient.Do(apiCall)
+	if err != nil {
+		log.Err(err).Msg("unable to perform api request for action.")
+		ctx.JSON(400, gin.H{"error": "Action execution failed.", "error_code": "REQ_CREATION_FAILED"})
+		return
+	}
+
+	defer resp.Body.Close()
+
+	var out any
+	json.NewDecoder(resp.Body).Decode(&out)
+
+	ctx.JSON(resp.StatusCode, out)
+}
+
+func interpolate(value any, input map[string]any, creds *common.UserCredentials) any {
+	switch v := value.(type) {
+	case string:
+		s := v
+		s = strings.ReplaceAll(s, "{{access_token}}", creds.AccessToken)
+
+		for k, v := range input {
+			s = strings.ReplaceAll(s, "{{"+k+"}}", v.(string))
+		}
+		return s
+
+	case map[string]any:
+		out := make(map[string]any)
+		for key, val := range v {
+			out[key] = interpolate(val, input, creds)
+		}
+		return out
+
+	default:
+		return value
+	}
 }

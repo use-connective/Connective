@@ -1,4 +1,16 @@
 definitions:
+  common.ActionExecuteRequest:
+    properties:
+      project_id:
+        type: string
+      project_secret:
+        type: string
+      request_body:
+        additionalProperties: {}
+        type: object
+      user_id:
+        type: string
+    type: object
   dao.ProviderListDisplayable:
     properties:
       display_name:
@@ -146,6 +158,17 @@ paths:
       consumes:
       - application/json
       description: Get connected accounts.
+      parameters:
+      - description: Project I'd
+        in: query
+        name: projectId
+        required: true
+        type: string
+      - description: User I'd
+        in: query
+        name: userId
+        required: true
+        type: string
       produces:
       - application/json
       responses: {}
@@ -453,6 +476,24 @@ paths:
       summary: Login User
       tags:
       - Auth
+  /execute/:provider/:action:
+    post:
+      consumes:
+      - application/json
+      description: Execute Action Request
+      parameters:
+      - description: Execute Action Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/common.ActionExecuteRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Execute Action Request
+      tags:
+      - Action
   /oauth/connect:
     get:
       consumes:
