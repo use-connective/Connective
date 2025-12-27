@@ -1,3 +1,25 @@
+/*
+	Author: Sushant <sushant.dhiman9812@gmail.com>
+
+	Purpose:
+	* Entry point for Connective backend system.
+	* Connects to databases.
+	* Setup API endpoints.
+	* Register connectors and actions into system and provide functionality for graceful shutdown.
+
+	IMPORTANT to know:
+
+	* You must know how oAuth works before going through this source code.
+
+	* This project is built using Hexagonal Architecture so having its knowledge is also recommended.
+
+	* Throughout this project (backend and dashboard) source code words connector, provider, integration means the same thing.
+      It is 3rd party product that we are connecting to such as Drive, Notion, Slack, GitHub etc.
+
+	* Actions - These are the actions which can be performed on 3rd party product
+	  such as sending a message in slack workspace or getting user files from dropbox.
+*/
+
 package main
 
 import (
@@ -35,6 +57,9 @@ func init() {
 		log.Fatal().Err(err).Msg("unable to load environment variables.")
 	}
 
+	// Load config from either config.json or config.local.json
+	// based on environment and initialize into Config global variable
+	// present in config.go file.
 	config.LoadConfiguration()
 
 }
@@ -46,29 +71,33 @@ func main() {
 	ctx := context.Background()
 
 	// Database Connection & Auto Migration
-
 	pg, err := postgres.New(ctx)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to connect to database.")
 	}
-
 	postgres.AutoMigrateTables(ctx, pg.Pool)
 
+	// Creates a new redis connection and return implementation of
+	// port.Cache interface
 	cache := redisClient.NewRedisClient(ctx)
 
+	// Connector Registry is a registry that holds a list of connectors. These connectors are registered
+	// on startup of the system. It can be used to register and retrieve connectors.
+	// It can be used to get action that can be performed by this connector. (Used in action_handler.go)
 	connectorRegistry := connectors.NewRegistryHandler(cache)
 
-	// Repository Layer Initialization
-
+	// Repository Layer Initialization - All these implements repo interface from port folder.
 	authRepo := postgres.NewAuthRepo(pg)
 	projectRepo := postgres.NewProjectRepo(pg)
 	providerCredentialsRepo := postgres.NewProviderCredentialsRepo(pg)
 	providerRepo := postgres.NewProviderRepo(pg)
 	connectedAccountRepo := postgres.NewConnectedAccountRepo(pg)
 	userRepo := postgres.NewUserRepo(pg)
+
 	router := server.NewRouter(authRepo, projectRepo, providerCredentialsRepo, providerRepo, connectedAccountRepo, userRepo, connectorRegistry)
 
-	// Seeding Providers
+	// Providers (connectors) are stored in providers.local.json or providers.json file (as per environment).
+	// Seeding means we are storing these in database (if not already stored)
 	providerSvc := service.NewProviderSvc(providerRepo)
 	providerSvc.SeedOnStartup(ctx)
 
@@ -84,18 +113,21 @@ func main() {
 	go func() {
 		log.Info().Msgf("HTTP Server started on port: %s", httpAddr)
 
-		err := srv.ListenAndServe()
-
-		if err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServe(); err != nil {
 			log.Fatal().Err(err).Msg("HTTP Server crashed")
+
 		}
 	}()
 
-	// Graceful shutdown
+	// Graceful shutdown.
+	// We must close opened connections before exiting application.
 	quit := make(chan os.Signal, 1)
+
+	// signal.Notify will listen for SIGTERM signal (CTRL+C) and send that to quit channel.
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	<-quit
 
+	// All code below this line will only be executed if CTRL+C is pressed on server.
 	log.Info().Msg("Shutting down server...")
 
 	ctxShutdown, cancel := context.WithTimeout(context.Background(), 5*time.Second)

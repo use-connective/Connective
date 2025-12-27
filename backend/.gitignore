@@ -4,3 +4,4 @@ config.prod.json
 
 bin
 providers.local.json
+.idea
